@@ -10,16 +10,17 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('modules', function (Blueprint $table) {
+        Schema::create('enrollments', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuid('user_id');
             $table->uuid('course_id');
-            $table->string('title');
-            $table->json('content')->nullable();
-            $table->string('attachment')->nullable();
-            $table->boolean('published')->default(false);
+            $table->string('status')->default('enrolled');
+            $table->timestamp('enrolled_at')->useCurrent();
+            $table->json('progress')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
         });
     }
@@ -30,6 +31,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('modules');
+        Schema::dropIfExists('enrollments');
     }
 };
