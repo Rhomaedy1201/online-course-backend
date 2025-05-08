@@ -30,4 +30,13 @@ class AuthController extends Controller
             'user' => $user,
         ]);
     }
+
+    public function logout(Request $request)
+    {
+        $request->user()->tokens()->delete();
+        $request->user()->tokens()->where('id', $request->id)->delete();
+        return response()->json([
+            'message' => 'Logout berhasil',
+        ]);
+    }
 }
