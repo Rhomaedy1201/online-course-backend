@@ -4,18 +4,17 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\ApiResponse;
-use App\Repositories\RoleRepository;
-use Illuminate\Database\QueryException;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 
-class RoleController extends Controller
+class UserController extends Controller
 {
     protected $param;
     use ApiResponse;
 
-    public function __construct(RoleRepository $role)
+    public function __construct(UserRepository $user)
     {
-        $this->param = $role;
+        $this->param = $user;
     }
 
     public function index(Request $request)
@@ -39,7 +38,7 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->param->store($request);
+        //
     }
 
     /**
@@ -47,7 +46,7 @@ class RoleController extends Controller
      */
     public function show(string $id)
     {
-        // 
+        //
     }
 
     /**
@@ -55,8 +54,7 @@ class RoleController extends Controller
      */
     public function edit(string $id)
     {
-        $data = $this->param->edit($id);
-        return $this->okApiResponse($data);
+        //
     }
 
     /**
@@ -64,7 +62,7 @@ class RoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        return $this->param->update($id, $request);
+        //
     }
 
     /**
@@ -72,6 +70,6 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        return $this->param->destroy($id);
+        //
     }
 }
