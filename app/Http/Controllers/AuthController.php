@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -22,7 +23,14 @@ class AuthController extends Controller
             return response()->json(['message' => 'Email atau password salah'], 401);
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $tokenResult = $user->createToken('auth_token', ['*']);
+        $tokenResult->accessToken->expires_at = now()->addMinutes(30);
+        $tokenResult->accessToken->save();
+
+        $token = $tokenResult->plainTextToken;
+
+        Log::info("User Login", ["user" => $user->email]);
+        Log::info('Now: ' . now());
 
         return response()->json([
             'message' => 'Login berhasil',
@@ -33,10 +41,14 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete();
-        $request->user()->tokens()->where('id', $request->id)->delete();
+        $request->user()?->currentAccessToken()?->delete();
+
+        Log::info("User Logout", ['user' => $request->user()?->email]);
+
         return response()->json([
             'message' => 'Logout berhasil',
         ]);
     }
+
+
 }

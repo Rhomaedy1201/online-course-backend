@@ -9,8 +9,10 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
 });
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['check.token.expiry', 'auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/get-roles', [RoleController::class, 'getRole']);
 
     Route::get('/role', [RoleController::class, 'index']);
     Route::post('/role-store', [RoleController::class, 'store']);
@@ -18,5 +20,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/role-update/{id}', [RoleController::class, 'update']);
     Route::delete('/role-delete/{id}', [RoleController::class, 'destroy']);
 
-    Route::get('/user', [UserController::class, 'index']);
+    Route::apiResource('/users', UserController::class);
 });
+

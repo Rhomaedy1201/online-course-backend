@@ -41,7 +41,7 @@ class RoleAndUserSeeder extends Seeder
             Role::updateOrCreate(
                 ['name' => $roleName],
                 [
-                    'id' => Str::uuid(), // Tambahkan ini
+                    'id' => Str::uuid(),
                     'permissions' => json_encode($permissions)
                 ]
             );
