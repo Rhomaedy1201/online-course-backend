@@ -4,11 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\ApiResponse;
-use App\Models\Role;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -18,6 +15,11 @@ class UserController extends Controller
     public function __construct(UserRepository $user)
     {
         $this->param = $user;
+    }
+
+    public function findUser($id)
+    {
+        return $this->param->findUser($id);
     }
 
     public function index(Request $request)
@@ -57,7 +59,7 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        return $this->param->update($request, $id);
     }
 
     /**
@@ -65,6 +67,6 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        return $this->param->destroy($id);
     }
 }

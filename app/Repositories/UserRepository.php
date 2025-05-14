@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class UserRepository
 {
@@ -16,6 +17,16 @@ class UserRepository
     public function __construct(User $user)
     {
         $this->model = $user;
+    }
+
+    public function findUser($id)
+    {
+        try {
+            $user = $this->model->where('id', $id)->first();
+            return $this->okApiResponse($user);
+        } catch (\Exception $e) {
+            return $this->errorApiResponse($e->getMessage());
+        }
     }
 
     public function index($search, $limit = 10)
@@ -54,6 +65,46 @@ class UserRepository
             return $this->errorApiResponse($e->getMessage());
         } catch (QueryException $e) {
             Log::error($e->getMessage(), ['User :' => Auth::user()]);
+            return $this->errorApiResponse($e->getMessage());
+        }
+    }
+
+    public function update($request, $id)
+    {
+        try {
+            $data = $request->validate([
+                'name' => ['required', 'string'],
+                'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($id)],
+                'role_id' => ['required', 'exists:roles,id'],
+            ]);
+
+            $user = $this->model->findOrFail($id);
+            $user->update($data);
+
+            Log::info('update User : ', ['User :' => Auth::user()->email . " name : " . Auth::user()->name]);
+            return $this->okApiResponse("Data Berhasil Diubah");
+        } catch (\Exception $e) {
+            Log::error($e->getMessage(), ['User :' => Auth::user()->email . " name : " . Auth::user()->name]);
+            return $this->errorApiResponse($e->getMessage());
+        } catch (QueryException $e) {
+            Log::error($e->getMessage(), ['User :' => Auth::user()->email . " name : " . Auth::user()->name]);
+            return $this->errorApiResponse($e->getMessage());
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $user = $this->model->findOrFail($id);
+            $user->delete();
+
+            Log::info("User Delete", ["User : " => Auth::user()->email . " name : " . Auth::user()->name]);
+            return $this->okApiResponse("Data Berhasil Dihapus");
+        } catch (\Exception $e) {
+            Log::error($e->getMessage(), ['User :' => Auth::user()->email . " name : " . Auth::user()->name]);
+            return $this->errorApiResponse($e->getMessage());
+        } catch (QueryException $e) {
+            Log::error($e->getMessage(), ['User :' => Auth::user()->email . " name : " . Auth::user()->name]);
             return $this->errorApiResponse($e->getMessage());
         }
     }

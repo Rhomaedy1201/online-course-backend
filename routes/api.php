@@ -21,5 +21,6 @@ Route::middleware(['check.token.expiry', 'auth:sanctum'])->group(function () {
     Route::delete('/role-delete/{id}', [RoleController::class, 'destroy']);
 
     Route::apiResource('/users', UserController::class);
+    Route::get('/users/find/{id}', [UserController::class, 'findUser']);
 });
 
