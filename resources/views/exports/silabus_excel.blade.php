@@ -1,0 +1,12 @@
+<table>
+    <tr>
+        <th>No</th>
+        <th>Judul</th>
+        <th>Deskripsi</th>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
